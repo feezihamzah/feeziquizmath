@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { questions } from "./data";
 import { formatTime } from "./utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion"; 
 
 export default function App() {
   const [name, setName] = useState("");
@@ -11,6 +11,8 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(20 * 60);
+  const [selectedOption, setSelectedOption] = useState(null); // NEW
+  const [isCorrect, setIsCorrect] = useState(null); // NEW
 
   useEffect(() => {
     if (!started || score !== null) return;
@@ -28,12 +30,23 @@ export default function App() {
   };
 
   const selectOption = (option) => {
-    const qId = questions[index].id;
+    const currentQ = questions[index];
+    const qId = currentQ.id;
+
+    setSelectedOption(option); // Track what user picked
+    setIsCorrect(option === currentQ.answer); // Set if correct
+
     setAnswers((prev) => ({ ...prev, [qId]: option }));
+
     setTimeout(() => {
-      if (index < questions.length - 1) setIndex(index + 1);
-      else submitQuiz();
-    }, 300);
+      setSelectedOption(null); // Clear highlight
+      setIsCorrect(null);
+      if (index < questions.length - 1) {
+        setIndex(index + 1);
+      } else {
+        submitQuiz();
+      }
+    }, 1000); // Wait 1s to show highlight
   };
 
   const submitQuiz = async () => {
@@ -41,7 +54,7 @@ export default function App() {
     const correct = questions.filter((q) => answers[q.id] === q.answer).length;
     setScore(correct);
 
-    await fetch("https://mathtest.free.nf/quizzes/database/save.php", {
+    await fetch("https://ibfim.com/lms/lmstest/database/save.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, score: correct }),
@@ -81,25 +94,42 @@ export default function App() {
             </AnimatePresence>
 
             <div>
-              {questions[index].options.map((opt) => (
-                <motion.button
-                  key={opt}
-                  layout
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: 20, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => selectOption(opt)}
-                  className="btn"
-                  style={{ display: "block", margin: "10px 0" }}
-                >
-                  {opt}
-                </motion.button>
-              ))}
+              {questions[index].options.map((opt) => {
+                const isSelected = selectedOption === opt;
+                const isAnswer = questions[index].answer === opt;
+
+                let btnClass = "btn";
+                if (selectedOption) {
+                  if (isAnswer) btnClass += " correct"; // green
+                  else if (isSelected) btnClass += " wrong"; // red
+                }
+
+                return (
+                  <motion.button
+                    key={opt}
+                    layout
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 20, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => selectOption(opt)}
+                    className={btnClass}
+                    disabled={!!selectedOption}
+                    style={{ display: "block", margin: "10px 0" }}
+                  >
+                    {opt}
+                  </motion.button>
+                );
+              })}
             </div>
 
-            <div className="text-sm mt-3">Question {index + 1} / {questions.length}</div>
+            <div className="text-sm mt-3">
+              Question {index + 1} / {questions.length}
+              {" - "}
+              {isCorrect === true && <span style={{ color: "green" }}>✅ Correct</span>}
+              {isCorrect === false && <span style={{ color: "red" }}>❌ Wrong</span>}
+            </div>
           </div>
         </>
       )}
