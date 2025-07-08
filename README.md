@@ -1,70 +1,88 @@
-# Getting Started with Create React App
+# 📘 FeeziQuizMath – Rounding Quiz App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A fun and interactive **Math Rounding Quiz** built with **React** (frontend) and **PHP + MySQL** (backend) to test users’ understanding of rounding numbers to the nearest ten.
 
-## Available Scripts
+🔗 Live Demo: [https://feeziquizmath.vercel.app](https://feeziquizmath.vercel.app)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ✅ 12 interactive multiple-choice questions (MCQs)
+- 🧠 Built-in scoring logic (correct answers only)
+- ⏱️ 20-minute countdown timer with auto-submit
+- 📊 Leaderboard to view top 20 scores
+- 🌐 Data saved securely using PHP + MySQL
+- 🎨 Smooth animations using Framer Motion
+- 🔐 CORS-enabled secure API
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🛠️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Layer       | Tech Used                         |
+|-------------|-----------------------------------|
+| Frontend    | React (Vite), Framer Motion, CSS |
+| Backend     | PHP (Vanilla) + MySQL            |
+| Hosting     | Vercel (Frontend) + InfinityFree (Backend) |
+| DB Table    | `table_quiz_math (name, score, status)` |
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📂 Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+feeziquizmath/
+│
+├── src/
+│ ├── App.js # Main quiz logic
+│ ├── data.js # Questions array
+│ ├── leaderboard.js # Leaderboard page
+│ ├── utils.js # Timer formatter
+│ └── index.css # Custom styles
+│
+├── database/
+│ ├── save.php # Save score to DB
+│ └── leaderboard.php # Fetch leaderboard
+│
+└── public/
+└── index.html # React root
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+yaml
+Copy
+Edit
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📌 How to Run Locally
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend (React)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+git clone https://github.com/feezihamzah/feeziquizmath.git
+cd feeziquizmath
+npm install
+npm run dev
+Backend (PHP)
+Upload database/save.php and leaderboard.php to a PHP hosting server
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Setup MySQL table:
 
-## Learn More
+sql
+Copy
+Edit
+CREATE TABLE table_quiz_math (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  score INT,
+  status TINYINT DEFAULT 1
+);
+📈 API Endpoints
+Endpoint	Description	Method
+/database/save.php	Save score (name + score)	POST
+/database/leaderboard.php	Fetch top 20 scores	GET
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+👤 Author
+Muhammad Feezi Bin Hamzah
+Frontend Developer | Kuala Lumpur
+📧 feezy92@gmail.com
+📱 +6017-580 1348
