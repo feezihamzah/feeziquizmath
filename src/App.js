@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { questions } from "./data";
 import { formatTime } from "./utils";
-import { AnimatePresence, motion } from "framer-motion"; 
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function App() {
   const [name, setName] = useState("");
@@ -11,13 +11,14 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(20 * 60);
-  const [selectedOption, setSelectedOption] = useState(null); // NEW
-  const [isCorrect, setIsCorrect] = useState(null); // NEW
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [correctCount, setCorrectCount] = useState(0);
 
   useEffect(() => {
     if (!started || score !== null) return;
     if (timeLeft <= 0) {
-      submitQuiz();
+      submitQuiz(correctCount);
       return;
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
@@ -33,31 +34,37 @@ export default function App() {
     const currentQ = questions[index];
     const qId = currentQ.id;
 
-    setSelectedOption(option); // Track what user picked
-    setIsCorrect(option === currentQ.answer); // Set if correct
+    const cleanUserAnswer = option.trim();
+    const cleanCorrectAnswer = currentQ.answer.trim();
 
+    const isAnswerCorrect = cleanUserAnswer === cleanCorrectAnswer;
+    const newCorrectCount = isAnswerCorrect ? correctCount + 1 : correctCount;
+
+    setSelectedOption(option);
+    setIsCorrect(isAnswerCorrect);
     setAnswers((prev) => ({ ...prev, [qId]: option }));
 
     setTimeout(() => {
-      setSelectedOption(null); // Clear highlight
+      setSelectedOption(null);
       setIsCorrect(null);
+
       if (index < questions.length - 1) {
+        setCorrectCount(newCorrectCount);
         setIndex(index + 1);
       } else {
-        submitQuiz();
+        submitQuiz(newCorrectCount); // Pass final count
       }
-    }, 1000); // Wait 1s to show highlight
+    }, 1000);
   };
 
-  const submitQuiz = async () => {
+  const submitQuiz = async (finalScore) => {
     if (score !== null) return;
-    const correct = questions.filter((q) => answers[q.id] === q.answer).length;
-    setScore(correct);
+    setScore(finalScore);
 
     await fetch("https://ibfim.com/lms/lmstest/database/save.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, score: correct }),
+      body: JSON.stringify({ name, score: finalScore }),
     });
   };
 
@@ -96,12 +103,12 @@ export default function App() {
             <div>
               {questions[index].options.map((opt) => {
                 const isSelected = selectedOption === opt;
-                const isAnswer = questions[index].answer === opt;
+                const isAnswer = questions[index].answer.trim() === opt.trim();
 
                 let btnClass = "btn";
                 if (selectedOption) {
-                  if (isAnswer) btnClass += " correct"; // green
-                  else if (isSelected) btnClass += " wrong"; // red
+                  if (isAnswer) btnClass += " correct";
+                  else if (isSelected) btnClass += " wrong";
                 }
 
                 return (
@@ -129,6 +136,10 @@ export default function App() {
               {" - "}
               {isCorrect === true && <span style={{ color: "green" }}>✅ Correct</span>}
               {isCorrect === false && <span style={{ color: "red" }}>❌ Wrong</span>}
+            </div>
+
+            <div className="text-sm" style={{ marginTop: "5px", fontWeight: "bold", color: "#2563eb" }}>
+              ✅ Correct so far: {correctCount}
             </div>
           </div>
         </>

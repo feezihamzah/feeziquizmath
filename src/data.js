@@ -11,5 +11,5 @@ export const questions = [
   { id: 9, question: "94 rounded off to the nearest 10 is..", options: ["100", "94", "90"], answer: "90" },
   { id: 10, question: "165 rounded off to the nearest 10 is..", options: ["160", "170", "150"], answer: "170" },
   { id: 11, question: "445 rounded off to the nearest 10 is..", options: ["450", "440", "500"], answer: "450" },
-  { id: 12, question: "999 rounded off to the nearest 10 is..", options: ["990", "1,000", "909"], answer: "1,000" },
+  { id: 12, question: "999 rounded off to the nearest 10 is..", options: ["990", "1000", "909"], answer: "1000" },
 ];
